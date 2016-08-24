@@ -33,25 +33,25 @@
     we might want to call other view functions, and not just renderIndexPage();
     Now instead of calling articleView.renderIndexPage(), we can invoke
     whatever we pass in! */
-Article.fetchAll = function(nextFunction) {
-  if (localStorage.hackerIpsum) {
-    $.ajax({
-      type: 'HEAD',
-      url: '/data/hackerIpsum.json',
-      success: function(data, message, xhr) {
-        var eTag = xhr.getResponseHeader('eTag');
-        if (!localStorage.eTag || eTag !== localStorage.eTag) {
-          Article.getAll(nextFunction); // DONE: pass 'nextFunction' into Article.getAll();
-        } else {
-          Article.loadAll(JSON.parse(localStorage.hackerIpsum));
-          nextFunction();
+  Article.fetchAll = function(nextFunction) {
+    if (localStorage.hackerIpsum) {
+      $.ajax({
+        type: 'HEAD',
+        url: '/data/hackerIpsum.json',
+        success: function(data, message, xhr) {
+          var eTag = xhr.getResponseHeader('eTag');
+          if (!localStorage.eTag || eTag !== localStorage.eTag) {
+            Article.getAll(nextFunction); // DONE: pass 'nextFunction' into Article.getAll();
+          } else {
+            Article.loadAll(JSON.parse(localStorage.hackerIpsum));
+            nextFunction();
+          }
         }
-      }
-    });
-  } else {
-    Article.getAll(nextFunction); // DONE: pass 'nextFunction' into getAll();
-  }
-};
+      });
+    } else {
+      Article.getAll(nextFunction); // DONE: pass 'nextFunction' into getAll();
+    }
+  };
 
   Article.getAll = function(nextFunction) {
     $.getJSON('/data/hackerIpsum.json', function(responseData, message, xhr) {
