@@ -64,36 +64,39 @@ Article.getAll = function(nextFunction) {
   });
 };
 
-Article.numWordsAll = function() {
-  return Article.allArticles.map(function(currentArticle) {
-    return currentArticle.body.match(/\w+/g).length;
-  }).reduce(function()) {
-    // TODO: complete this function to sum up all of the words.
-  }
-};
+  Article.numWordsAll = function() {
+    return Article.allArticles.map(function(currentArticle) {
+      return currentArticle.body.match(/\w+/g).length;
+    }).reduce(function(prev, cur) {
+      return prev + cur;
+    });
+  };
 
-Article.allAuthors = function() {
-  // TODO: return a mapped collection
-      // with just the author names
+  Article.allAuthors = function() {
+    return Article.allArticles.map(function(curArticle) {
+      return curArticle.author;
+    }).reduce(function(acc, cur) {
+      if (acc.indexOf(cur) === -1) {
+        acc.push(cur);
+      }
+      return acc;
+    }, []);
+  };
 
-      //then chain reduce, and set the accumulator to an array
-      // to build a unique list of author names.
-}
-
-Article.numWordsByAuthor = function() {
-  // TODO: transform each author element into an object with 2 properties:
-    // one for the author's name, and one for the total number of words
-    // written by the specified author.
+  Article.numWordsByAuthor = function() {
     return Article.allAuthors().map(function(currentAuthor) {
       return {
         name: currentAuthor,
-        numWords: // someCollection.filter(function(curArticle) {
-          // what do we return here to check for matching authors?
-        // .map() to return the author's word count for each article body (you may split or regexp)
-        // .reduce() to squash this array into one big number, per author.
-      }
+        numWords: Article.allArticles.filter(function(curArticle) {
+          return curArticle.author === currentAuthor;
+        }).map(function(curArticle) {
+          return curArticle.body.match(/\w+/g).length;
+        }).reduce(function(prev, cur) {
+          return prev + cur;
+        })
+      };
     });
-}
+  };
 
-module.Article = Article;
+  module.Article = Article;
 })(window);
