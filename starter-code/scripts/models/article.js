@@ -16,11 +16,11 @@
     return template(this);
   };
 
-  Article.loadAll = function(dataWePassIn) {
+  Article.loadAll = function(inputData) {
   /* NOTE: the original forEach code should be refactored
      using `.map()` -  since what we are trying to accomplish is the
      transformation of one collection into another. */
-    Article.allArticles = dataWePassIn.sort(function(a,b) {
+    Article.allArticles = inputData.sort(function(a,b) {
       return (new Date(b.publishedOn)) - (new Date(a.publishedOn));
     }).map(function(ele) {
       return new Article(ele);
