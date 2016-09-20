@@ -6,8 +6,6 @@ function Article (opts) {
   }
 }
 
-Article.allArticles = [];
-
 Article.prototype.toHtml = function(scriptTemplateId) {
   var template = Handlebars.compile($(scriptTemplateId).text());
   this.daysAgo = parseInt((new Date() - new Date(this.publishedOn))/60/60/24/1000);
@@ -27,12 +25,12 @@ Article.loadAll = function(dataWePassIn) {
   });
 };
 
-/* TODO: Refactoring the Article.fetchAll method, it now accepts a parameter
+/* NOTE: Refactoring the Article.fetchAll method, it now accepts a parameter
     that will execute once the loading of articles is done. We do this because
     we might want to call other view functions, and not just renderIndexPage();
     Now instead of calling articleView.renderIndexPage(), we can call
     whatever we pass in! */
-Article.fetchAll = function(nextFunction) {
+Article.fetchAll = function(next) {
   if (localStorage.hackerIpsum) {
     $.ajax({
       type: 'HEAD',
@@ -40,26 +38,28 @@ Article.fetchAll = function(nextFunction) {
       success: function(data, message, xhr) {
         var eTag = xhr.getResponseHeader('eTag');
         if (!localStorage.eTag || eTag !== localStorage.eTag) {
-          localStorage.eTag = eTag;
-          Article.getAll(nextFunction); // DONE: pass 'nextFunction' into Article.getAll();
+          // DONE: pass 'next' into Article.getAll();
+          Article.getAll(next);
         } else {
           Article.loadAll(JSON.parse(localStorage.hackerIpsum));
-          // DONE: Replace the following line with 'nextFunction' and invoke it!
-          nextFunction();
+          // DONE: invoke next
+          next();
         }
       }
     });
   } else {
-    Article.getAll(nextFunction); // DONE: pass 'nextFunction' into getAll();
+    // DONE: pass 'next' into getAll();
+    Article.getAll(next);
   }
 };
 
-Article.getAll = function(nextFunction) {
-  $.getJSON('/data/hackerIpsum.json', function(responseData) {
+Article.getAll = function(next) {
+  $.getJSON('/data/hackerIpsum.json', function(responseData, message, xhr) {
+    localStorage.eTag = xhr.getResponseHeader('eTag');
     Article.loadAll(responseData);
     localStorage.hackerIpsum = JSON.stringify(responseData);
-    // DONE: invoke nextFunction!
-    nextFunction();
+    // DONE: invoke next!
+    next();
   });
 };
 
@@ -68,7 +68,7 @@ Article.getAll = function(nextFunction) {
 Article.numWordsAll = function() {
   return Article.allArticles.map(function(article) {
       //DONE: Grab the word count from each article body.
-    return article.body.match(/\w+/g).length;
+    return article.body.split(' ').length;
   })
   // TODO: complete this reduce to get a grand total word count
   .reduce(function() {
