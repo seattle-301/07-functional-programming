@@ -33,7 +33,7 @@
       we might want to call other view functions, and not just renderIndexPage();
       Now instead of calling articleView.renderIndexPage(), we can call
       whatever we pass in! */
-  Article.fetchAll = function(nextFunction) {
+  Article.fetchAll = function(next) {
     if (localStorage.hackerIpsum) {
       $.ajax({
         type: 'HEAD',
@@ -41,26 +41,28 @@
         success: function(data, message, xhr) {
           var eTag = xhr.getResponseHeader('eTag');
           if (!localStorage.eTag || eTag !== localStorage.eTag) {
-            Article.getAll(nextFunction); // DONE: pass 'nextFunction' into Article.getAll();
+            // DONE: pass 'next' into Article.getAll();
+            Article.getAll(next);
           } else {
             Article.loadAll(JSON.parse(localStorage.hackerIpsum));
-            // DONE: Replace the following line with 'nextFunction' and invoke it!
-            nextFunction();
+            // DONE: invoke next
+            next();
           }
         }
       });
+      Article.getAll(next);
+      // DONE: pass 'next' into getAll();
     } else {
-      Article.getAll(nextFunction); // DONE: pass 'nextFunction' into getAll();
     }
   };
 
-  Article.getAll = function(nextFunction) {
+  Article.getAll = function(next) {
     $.getJSON('/data/hackerIpsum.json', function(responseData, message, xhr) {
       localStorage.eTag = xhr.getResponseHeader('eTag');
       Article.loadAll(responseData);
       localStorage.hackerIpsum = JSON.stringify(responseData);
       // DONE invoke our parameter.
-      nextFunction();
+      next();
     });
   };
 
