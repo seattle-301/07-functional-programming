@@ -58,7 +58,6 @@
       localStorage.eTag = xhr.getResponseHeader('eTag');
       Article.loadAll(responseData);
       localStorage.hackerIpsum = JSON.stringify(responseData);
-      // invoke next!
       next();
     });
   };
@@ -81,7 +80,7 @@
   //return       TODO: map our collection
     //return    TODO: return just the author names
 
-  /* TODO: For our `reduce` that we'll chain here -- since we are trying to
+  /* TODO: For our reduce that we'll chain here -- since we are trying to
       return an array, we'll need to specify an accumulator type (AKA initial value)
       What should this accumulator be and where is it placed? */
   };
