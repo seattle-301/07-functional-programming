@@ -50,9 +50,8 @@
           }
         }
       });
-      Article.getAll(next);
-      // DONE: pass 'next' into getAll();
     } else {
+      Article.getAll(next);
     }
   };
 
@@ -68,8 +67,7 @@
 
   Article.numWordsAll = function() {
     return Article.allArticles.map(function(currentArticle) {
-      return currentArticle.body.match(/\w+/g).length;
-      // alternate: return currentArticle.body.split(' ').length;
+      return currentArticle.body.split(' ').length;
     }).reduce(function(prev, cur) {
       return prev + cur;
     });
