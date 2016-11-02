@@ -96,7 +96,7 @@
       numWords: someCollection.filter(function(curArticle) {
        return a condition here to check for matching authors
       })
-      .map(...) // TODO: use .map to return the author's word count for each article's body (hint: regexp!).
+      .map(...) // TODO: use .map to return the author's word count for each article's body.
       .reduce(...) // TODO: squash this array of numbers into one big number!
       */
       };
